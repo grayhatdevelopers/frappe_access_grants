@@ -108,18 +108,20 @@ def request_sync(user: str | None = None) -> None:
 
 def enqueue_sync(user: str | None = None) -> None:
 	# One queued job covers every request made before it starts.
-	key = frappe.cache.make_key(f"{SYNC_REQUESTED_KEY}:{user or '*'}")
-	if frappe.cache.set(key, 1, nx=True, ex=3600):
-		frappe.enqueue(
-			"access_grants.sync.run_requested_sync",
-			queue="default" if user else "long",
-			for_user=user,
-		)
+	key = f"{SYNC_REQUESTED_KEY}:{user or '*'}"
+	if frappe.cache.get_value(key):
+		return
+	frappe.cache.set_value(key, 1, expires_in_sec=3600)
+	frappe.enqueue(
+		"access_grants.sync.run_requested_sync",
+		queue="default" if user else "long",
+		for_user=user,
+	)
 
 
 def run_requested_sync(for_user: str | None = None) -> None:
 	# Cleared before reading, so a change made while this runs queues another job.
-	frappe.cache.delete(frappe.cache.make_key(f"{SYNC_REQUESTED_KEY}:{for_user or '*'}"))
+	frappe.cache.delete_value(f"{SYNC_REQUESTED_KEY}:{for_user or '*'}")
 	sync(for_user)
 
 
