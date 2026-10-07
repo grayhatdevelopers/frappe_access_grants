@@ -1,13 +1,11 @@
 {
  "actions": [],
- "allow_rename": 1,
- "autoname": "field:title",
+ "autoname": "format:AG-{####}",
  "creation": "2026-10-07 12:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "column_break_title",
   "enabled",
   "access_section",
   "roles",
@@ -20,12 +18,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Title",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "column_break_title",
-   "fieldtype": "Column Break"
+   "reqd": 1
   },
   {
    "default": "1",
@@ -43,35 +36,35 @@
    "description": "Users holding any of these roles get the access.",
    "fieldname": "roles",
    "fieldtype": "Table MultiSelect",
-   "label": "Roles",
+   "label": "For Roles",
    "options": "Has Role",
    "reqd": 1
   },
   {
-   "description": "The document type these users are restricted by, for example Employee.",
+   "description": "Every record of this document type is allowed, for example Employee. This only affects users who are restricted to specific records of it; everyone else already sees them all.",
    "fieldname": "allow",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Restricted By",
+   "label": "Allow All",
    "options": "DocType",
    "reqd": 1
   },
   {
-   "description": "The document types where they see every record instead of only their own, for example Timesheet. The restriction stays in force everywhere else.",
+   "description": "The document types the access applies to, for example Timesheet. The restriction stays in force everywhere else.",
    "fieldname": "applicable_for",
    "fieldtype": "Table MultiSelect",
-   "label": "Lifted For",
+   "label": "Applicable For",
    "options": "Access Grant DocType",
    "reqd": 1
   }
  ],
  "links": [],
- "modified": "2026-10-07 12:00:00.000000",
+ "modified": "2026-10-07 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "Access Grants",
  "name": "Access Grant",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -88,8 +81,10 @@
   }
  ],
  "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "title",
  "track_changes": 1
 }
