@@ -1,0 +1,14 @@
+{
+ "app": "access_grants",
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "shield-check",
+ "icon_type": "Link",
+ "label": "Access Grants",
+ "link_to": "Access Grants",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-10-07 12:00:00.000000",
+ "name": "Access Grants",
+ "restrict_removal": 0,
+ "standard": 1
+}

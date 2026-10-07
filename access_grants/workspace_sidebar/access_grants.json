@@ -1,0 +1,26 @@
+{
+ "app": "access_grants",
+ "doctype": "Workspace Sidebar",
+ "header_icon": "shield-check",
+ "items": [
+  {
+   "icon": "shield-check",
+   "label": "Access Grant",
+   "link_to": "Access Grant",
+   "link_type": "DocType",
+   "type": "Link"
+  },
+  {
+   "icon": "lock",
+   "label": "User Permission",
+   "link_to": "User Permission",
+   "link_type": "DocType",
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-10-07 12:00:00.000000",
+ "module": "Access Grants",
+ "name": "Access Grants",
+ "standard": 1,
+ "title": "Access Grants"
+}

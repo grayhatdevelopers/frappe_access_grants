@@ -1,0 +1,16 @@
+[
+ {
+  "description": "Created and removed by an Access Grant. Untick to keep this row yourself.",
+  "doctype": "Custom Field",
+  "dt": "User Permission",
+  "fieldname": "managed_by_access_grants",
+  "fieldtype": "Check",
+  "in_standard_filter": 1,
+  "insert_after": "hide_descendants",
+  "label": "Managed by Access Grants",
+  "modified": "2026-10-07 12:00:00.000000",
+  "module": "Access Grants",
+  "name": "User Permission-managed_by_access_grants",
+  "no_copy": 1
+ }
+]
