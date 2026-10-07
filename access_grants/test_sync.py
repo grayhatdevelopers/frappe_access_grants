@@ -52,12 +52,10 @@ def make_grant():
 
 
 def managed_rows(user):
-	return frappe.get_all(
-		"User Permission",
-		filters={"user": user, MANAGED: 1},
-		fields=["for_value", "applicable_for"],
-		as_list=True,
+	rows = frappe.get_all(
+		"User Permission", filters={"user": user, MANAGED: 1}, fields=["for_value", "applicable_for"]
 	)
+	return [(row.for_value, row.applicable_for) for row in rows]
 
 
 class IntegrationTestSync(IntegrationTestCase):

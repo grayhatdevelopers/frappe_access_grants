@@ -5,7 +5,7 @@ import frappe
 from frappe.tests import IntegrationTestCase
 
 
-def make_grant(roles=("System Manager",), allow="User", applicable_for=("ToDo",)):
+def make_grant(roles=("System Manager",), allow="User", applicable_for=("User",)):
 	return frappe.get_doc(
 		{
 			"doctype": "Access Grant",
