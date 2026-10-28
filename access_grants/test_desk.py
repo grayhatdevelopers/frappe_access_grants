@@ -1,19 +1,18 @@
 import frappe
-from frappe.desk.doctype.workspace_sidebar.workspace_sidebar import auto_generate_sidebar_from_module
+from frappe.desk.doctype.sidebar.sidebar import get_sidebar
 from frappe.tests import IntegrationTestCase
 
 MODULE = "Access Grants"
 
 
 class IntegrationTestDesk(IntegrationTestCase):
-	def test_one_sidebar_for_the_module(self):
-		sidebars = frappe.get_all(
-			"Workspace Sidebar", filters={"module": MODULE, "for_user": ["is", "not set"]}, pluck="name"
-		)
-		self.assertEqual(sidebars, [MODULE])
-		# Frappe generates a second sidebar for a module that has none named after it.
-		self.assertNotIn(MODULE, [sidebar.title for sidebar in auto_generate_sidebar_from_module()])
+	def test_module_has_the_shipped_sidebar(self):
+		# Without one, Frappe computes a sidebar from the module's contents.
+		sidebar = get_sidebar(MODULE)
+		self.assertEqual((sidebar.app, sidebar.standard), ("access_grants", 1))
+		self.assertEqual([item.link_to for item in sidebar.items], ["Access Grant", "User Permission"])
 
 	def test_desk_icon_opens_the_sidebar(self):
-		icon = frappe.db.get_value("Desktop Icon", MODULE, ["link_type", "link_to", "standard"], as_dict=True)
-		self.assertEqual(icon, {"link_type": "Workspace Sidebar", "link_to": MODULE, "standard": 1})
+		# Icons are imported only on sites using the icon grid, which finds a sidebar by its module.
+		icon = frappe.get_file_json(frappe.get_app_path("access_grants", "desktop_icon", "access_grants.json"))
+		self.assertEqual((icon["link_type"], icon["link_to"]), ("Workspace Sidebar", MODULE))
