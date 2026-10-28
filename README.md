@@ -91,7 +91,7 @@ A daily job repeats the sync for changes that bypass these events, such as direc
 Run the tests in a disposable Docker bench, as CI does. Set `FRAPPE_IMAGE` to the version in [`ci.yml`](.github/workflows/ci.yml), for example:
 
 ```bash
-FRAPPE_IMAGE=frappe/erpnext:v16.36.0 tests/docker/run.sh
+FRAPPE_IMAGE=frappe/erpnext:v16.52.1 tests/docker/run.sh
 ```
 
 Or from an existing bench that has ERPNext installed:
