@@ -234,6 +234,20 @@ class IntegrationTestAccessRequest(IntegrationTestCase):
 		self.assertIn(mine.name, visible)
 		self.assertNotIn(theirs.name, visible)
 
+	def test_requesters_can_pick_a_role_profile(self):
+		# Frappe's own lookup is for System Managers only; the form uses this one.
+		from frappe.desk.search import search_link
+
+		profile = make_role_profile(ROLE).name
+		with set_user(self.requester):
+			found = search_link(
+				"Role Profile",
+				profile,
+				query="access_grants.access_requests.search_role_profiles",
+				reference_doctype="Access Request",
+			)
+		self.assertEqual([row["value"] for row in found], [profile])
+
 	def test_rejects_a_request_for_nothing(self):
 		self.assertRaises(frappe.ValidationError, ask, self.requester, roles=())
 
