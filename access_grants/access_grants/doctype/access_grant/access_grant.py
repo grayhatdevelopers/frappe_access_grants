@@ -16,6 +16,8 @@ class AccessGrant(Document):
 		self.validate_document_types()
 
 	def validate_roles(self):
+		if not self.roles and not self.role_profiles:
+			frappe.throw(_("Name at least one role or role profile."))
 		for row in self.roles:
 			if row.role in AUTOMATIC_ROLES:
 				# Frappe gives these to users on its own, so no user record lists them.

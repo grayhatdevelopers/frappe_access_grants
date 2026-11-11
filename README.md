@@ -25,7 +25,7 @@ The restriction stays in force everywhere the grant does not name. The manager a
 
 ## What you can do
 
-- Give several roles access in one grant.
+- Give several roles access in one grant, or the users of a role profile, or both.
 - Apply a grant to several document types at once.
 - Use any document type users are restricted by, not only Employee.
 - Disable a grant to withdraw its access, and enable it again to restore it.
@@ -59,9 +59,12 @@ Open **Access Grants** from the desk and add an **Access Grant**:
 | --- | --- | --- |
 | Title | Name of the grant | Project managers see all timesheets |
 | For Roles | Users holding any of these roles get the access | Projects Manager |
+| For Role Profiles | Users assigned any of these role profiles get the access | Project Leads |
 | Allow All | The document type whose records are all allowed | Employee |
 | Applicable For | The document types the access applies to | Timesheet |
 | Enabled | Untick to withdraw the access without deleting the grant | Ticked |
+
+A grant names roles, role profiles or both, and covers a user who matches either. Use a role profile when the profile is what you manage: removing it from a user withdraws the access, whatever roles the user keeps.
 
 Saving the grant creates the rows in the background, usually within a few seconds. Only System Managers can create grants.
 
@@ -74,7 +77,8 @@ A grant only affects users who are restricted to specific records of the **Allow
 Rows are added and removed when:
 
 - a grant is saved, disabled or deleted;
-- a user gains or loses one of its roles, or is disabled;
+- a user gains or loses one of its roles or role profiles, or is disabled;
+- a role profile's roles change;
 - a record of the **Allow All** document type is created or deleted;
 - the user's own restriction is added or removed.
 

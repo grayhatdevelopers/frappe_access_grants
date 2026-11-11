@@ -39,12 +39,30 @@ def make_employee(user=None):
 	return employee.name
 
 
-def make_grant():
+def make_role_profile(*roles):
+	return frappe.get_doc(
+		{
+			"doctype": "Role Profile",
+			"role_profile": frappe.generate_hash(length=8),
+			"roles": [{"role": role} for role in roles],
+		}
+	).insert()
+
+
+def set_role_profiles(user, *profiles):
+	# Frappe replaces the user's roles with those of their profiles.
+	user = frappe.get_doc("User", user)
+	user.set("role_profiles", [{"role_profile": profile} for profile in profiles])
+	user.save()
+
+
+def make_grant(roles=(ROLE,), role_profiles=()):
 	return frappe.get_doc(
 		{
 			"doctype": "Access Grant",
 			"title": frappe.generate_hash(length=8),
-			"roles": [{"role": ROLE}],
+			"roles": [{"role": role} for role in roles],
+			"role_profiles": [{"role_profile": profile} for profile in role_profiles],
 			"allow": "Employee",
 			"applicable_for": [{"document_type": "Timesheet"}],
 		}
@@ -132,6 +150,50 @@ class IntegrationTestSync(IntegrationTestCase):
 
 		user.add_roles(ROLE)
 		self.assertIn((self.staff_employee, "Timesheet"), managed_rows(self.manager))
+
+	def test_grant_for_a_role_profile_covers_only_its_users(self):
+		# The profile need not hold any particular role; being assigned it is what counts.
+		profile = make_role_profile("Employee").name
+		member = make_user("Employee")
+		make_employee(member)
+		set_role_profiles(member, profile)
+
+		make_grant(roles=(), role_profiles=(profile,))
+
+		self.assertIn((self.staff_employee, "Timesheet"), managed_rows(member))
+		self.assertEqual(managed_rows(self.manager), [])
+
+	def test_grant_for_roles_and_a_profile_covers_users_with_either(self):
+		profile = make_role_profile("Employee").name
+		member = make_user("Employee")
+		make_employee(member)
+		set_role_profiles(member, profile)
+
+		make_grant(role_profiles=(profile,))
+
+		self.assertIn((self.staff_employee, "Timesheet"), managed_rows(member))
+		self.assertIn((self.staff_employee, "Timesheet"), managed_rows(self.manager))
+
+	def test_rows_follow_the_users_profiles(self):
+		profile = make_role_profile("Employee").name
+		make_grant(roles=(), role_profiles=(profile,))
+
+		set_role_profiles(self.manager, profile)
+		self.assertIn((self.staff_employee, "Timesheet"), managed_rows(self.manager))
+
+		set_role_profiles(self.manager)
+		self.assertEqual(managed_rows(self.manager), [])
+
+	def test_rows_follow_the_roles_of_a_profile(self):
+		profile = make_role_profile("Employee", ROLE)
+		set_role_profiles(self.manager, profile.name)
+		make_grant()
+		self.assertIn((self.staff_employee, "Timesheet"), managed_rows(self.manager))
+
+		# Frappe saves each of the profile's users again, which takes the role away.
+		profile.set("roles", [{"role": "Employee"}])
+		profile.save()
+		self.assertEqual(managed_rows(self.manager), [])
 
 	def test_rows_follow_the_records(self):
 		make_grant()
