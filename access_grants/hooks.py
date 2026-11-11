@@ -24,9 +24,13 @@ fixtures = [
 	},
 ]
 
-# Everything that can change which rows a grant should produce.
+# Everything that can change which rows a grant should produce, and the hook that keeps
+# the roles of active Access Requests through a role profile reset.
 doc_events = {
-	"User": {"on_update": "access_grants.sync.on_user_change"},
+	"User": {
+		"validate": "access_grants.access_requests.on_user_validate",
+		"on_update": "access_grants.sync.on_user_change",
+	},
 	"User Permission": {
 		"on_update": "access_grants.sync.on_user_permission_change",
 		"after_delete": "access_grants.sync.on_user_permission_change",
@@ -37,5 +41,15 @@ doc_events = {
 	},
 }
 
-# Catches changes that bypass the document events, such as direct database writes.
-scheduler_events = {"daily": ["access_grants.sync.sync"]}
+scheduler_events = {
+	# Starts and ends Access Requests; a request ends at most this late.
+	"cron": {"*/5 * * * *": ["access_grants.access_requests.process_due"]},
+	# Catches changes that bypass the document events, such as direct database writes.
+	"daily": ["access_grants.sync.sync"],
+}
+
+# Requesters see their own Access Requests; approvers see all of them.
+permission_query_conditions = {
+	"Access Request": "access_grants.access_requests.get_permission_query_conditions",
+}
+has_permission = {"Access Request": "access_grants.access_requests.has_permission"}

@@ -32,6 +32,7 @@ The restriction stays in force everywhere the grant does not name. The manager a
 - See every row the app created by filtering User Permission on **Managed by Access Grants**.
 - Keep a row yourself by unticking that field; the app leaves it alone from then on.
 - Add your own User Permissions alongside; the app never touches them.
+- Give someone extra roles for a set time with an **Access Request**, which takes them back at the end.
 
 ## Requirements
 
@@ -83,6 +84,31 @@ Rows are added and removed when:
 - the user's own restriction is added or removed.
 
 A daily job repeats the sync for changes that bypass these events, such as direct database writes. A managed row deleted by hand comes back on the next sync; disable the grant to remove its rows.
+
+## Temporary access
+
+An **Access Request** gives a user extra roles until a set time, then takes them back.
+
+1. Someone opens **Access Request**, picks the roles or role profiles they need, an Until time and a reason, and saves. A request is for yourself; approvers can create one for anyone.
+2. Approvers get a notification by email and in the desk's bell. An approver opens the request and clicks **Decide > Approve** or **Reject**. They can shorten Until before approving.
+3. At From, the roles are added. At Until, they come off within 5 minutes. The requester can **Ask for More Time**; an approver approves or rejects the new end time. An approver, or the user, can **Revoke** it early.
+
+| Who | Can |
+| --- | --- |
+| Any desk user | Ask for access for themselves, see their own requests, withdraw or give back their access |
+| Access Approver | Decide any request except their own, for up to 7 days, without System Manager |
+| System Manager | Decide any request except their own, including System Manager and longer windows |
+
+A System Manager grants access directly by creating a request for someone else and approving it.
+
+What it guarantees:
+
+- Only the roles the request added come off. A role the user already had stays, and so does a role another active request still gives.
+- A role profile's roles are added, not the profile itself, so ending the request removes them cleanly.
+- For a user with a role profile, Frappe resets their roles to the profile's whenever their user record is saved. Active requests put their roles back on that save.
+- Every request keeps who asked, why, who decided and when, and Frappe's Permission Log records each role change on the user.
+
+The notifications are standard Frappe **Notification** rules (Access Request New, More Time, Decided, More Time Decided). Change their wording or recipients by disabling one and duplicating it. They need an outgoing email account: without one, Frappe logs "Failed to send Notification" and the bell entry is skipped too.
 
 ## Limits
 
