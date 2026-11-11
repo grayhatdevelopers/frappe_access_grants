@@ -16,8 +16,19 @@
   },
   {
    "doctype": "Sidebar Item",
-   "icon": "lock",
+   "icon": "clock",
    "idx": 2,
+   "label": "Access Request",
+   "link_to": "Access Request",
+   "link_type": "DocType",
+   "parentfield": "items",
+   "parenttype": "Sidebar",
+   "type": "Link"
+  },
+  {
+   "doctype": "Sidebar Item",
+   "icon": "lock",
+   "idx": 3,
    "label": "User Permission",
    "link_to": "User Permission",
    "link_type": "DocType",
@@ -26,7 +37,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-28 12:00:00.000000",
+ "modified": "2026-11-11 12:00:00.000000",
  "module": "Access Grants",
  "name": "Access Grants",
  "standard": 1,

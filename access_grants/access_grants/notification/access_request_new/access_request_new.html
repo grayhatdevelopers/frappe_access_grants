@@ -1,0 +1,10 @@
+<p>{{ doc.user }} asks for temporary access.</p>
+<ul>
+<li>{{ _("User") }}: {{ doc.user }}</li>
+<li>{{ _("From") }}: {{ frappe.utils.format_datetime(doc.from_time) }}</li>
+<li>{{ _("Until") }}: {{ frappe.utils.format_datetime(doc.until) }}</li>
+<li>{{ _("Roles") }}: {{ doc.roles | map(attribute="role") | join(", ") or "-" }}</li>
+<li>{{ _("Role Profiles") }}: {{ doc.role_profiles | map(attribute="role_profile") | join(", ") or "-" }}</li>
+<li>{{ _("Reason") }}: {{ doc.reason }}</li>
+</ul>
+<p>{{ frappe.utils.get_link_to_form(doc.doctype, doc.name) }}</p>
