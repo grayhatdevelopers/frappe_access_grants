@@ -9,6 +9,7 @@
   "enabled",
   "access_section",
   "roles",
+  "role_profiles",
   "allow",
   "applicable_for"
  ],
@@ -37,8 +38,14 @@
    "fieldname": "roles",
    "fieldtype": "Table MultiSelect",
    "label": "For Roles",
-   "options": "Has Role",
-   "reqd": 1
+   "options": "Has Role"
+  },
+  {
+   "description": "Users assigned any of these role profiles get the access, whatever roles the profile holds. Name roles, role profiles or both; a user matching either is covered.",
+   "fieldname": "role_profiles",
+   "fieldtype": "Table MultiSelect",
+   "label": "For Role Profiles",
+   "options": "User Role Profile"
   },
   {
    "description": "Every record of this document type is allowed, for example Employee. This only affects users who are restricted to specific records of it; everyone else already sees them all.",
@@ -60,7 +67,7 @@
   }
  ],
  "links": [],
- "modified": "2026-10-07 17:00:00.000000",
+ "modified": "2026-11-11 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Access Grants",
  "name": "Access Grant",

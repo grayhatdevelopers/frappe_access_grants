@@ -2,8 +2,8 @@
 
 Frappe has no way to exempt a role from a user permission. A user restricted to their own
 Employee sees another employee's Timesheet only if they hold a User Permission row for that
-employee. This module writes those rows for every user a grant covers and removes them when the
-grant, the role or the record goes away.
+employee. This module writes those rows for every user a grant covers, by role or by role
+profile, and removes them when the grant, the role, the profile or the record goes away.
 
 Only rows flagged `managed_by_access_grants` are ever created, changed or deleted here.
 """
@@ -61,7 +61,7 @@ def get_desired_rows(user: str | None = None) -> set[tuple[str, str, str, str]]:
 		grant = frappe.get_doc("Access Grant", name)
 		if not frappe.db.table_exists(grant.allow):
 			continue
-		users = get_users_with_roles([row.role for row in grant.roles], user)
+		users = get_covered_users(grant, user)
 		if not users:
 			continue
 		targets = {row.document_type for row in grant.applicable_for}
@@ -87,11 +87,20 @@ def get_desired_rows(user: str | None = None) -> set[tuple[str, str, str, str]]:
 	return desired
 
 
-def get_users_with_roles(roles: list[str], user: str | None = None) -> list[str]:
-	filters = {"parenttype": "User", "role": ["in", roles]}
-	if user:
-		filters["parent"] = user
-	holders = set(frappe.get_all("Has Role", filters=filters, pluck="parent")) - {"Administrator"}
+def get_covered_users(grant, user: str | None = None) -> list[str]:
+	"""Return the enabled users holding any of the grant's roles or assigned any of its role profiles."""
+	holders = set()
+	for child, field, values in (
+		("Has Role", "role", [row.role for row in grant.roles]),
+		("User Role Profile", "role_profile", [row.role_profile for row in grant.role_profiles]),
+	):
+		if not values:
+			continue
+		filters = {"parenttype": "User", field: ["in", values]}
+		if user:
+			filters["parent"] = user
+		holders.update(frappe.get_all(child, filters=filters, pluck="parent"))
+	holders.discard("Administrator")
 	if not holders:
 		return []
 	return frappe.get_all("User", filters={"name": ["in", list(holders)], "enabled": 1}, pluck="name")
