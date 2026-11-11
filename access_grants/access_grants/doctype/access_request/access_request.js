@@ -2,6 +2,11 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Access Request", {
+	setup(frm) {
+		frm.set_query("role_profiles", () => ({
+			query: "access_grants.access_requests.search_role_profiles",
+		}));
+	},
 	refresh(frm) {
 		if (frm.is_new()) return;
 		if (frm.doc.status !== "Requested") {
