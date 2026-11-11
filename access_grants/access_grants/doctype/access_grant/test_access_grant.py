@@ -5,12 +5,13 @@ import frappe
 from frappe.tests import IntegrationTestCase
 
 
-def make_grant(roles=("System Manager",), allow="User", applicable_for=("User",)):
+def make_grant(roles=("System Manager",), role_profiles=(), allow="User", applicable_for=("User",)):
 	return frappe.get_doc(
 		{
 			"doctype": "Access Grant",
 			"title": frappe.generate_hash(length=8),
 			"roles": [{"role": role} for role in roles],
+			"role_profiles": [{"role_profile": profile} for profile in role_profiles],
 			"allow": allow,
 			"applicable_for": [{"document_type": doctype} for doctype in applicable_for],
 		}
@@ -20,6 +21,15 @@ def make_grant(roles=("System Manager",), allow="User", applicable_for=("User",)
 class IntegrationTestAccessGrant(IntegrationTestCase):
 	def test_saves_for_a_linked_document_type(self):
 		make_grant().insert()
+
+	def test_saves_for_role_profiles_alone(self):
+		profile = frappe.get_doc(
+			{"doctype": "Role Profile", "role_profile": frappe.generate_hash(length=8)}
+		).insert()
+		make_grant(roles=(), role_profiles=(profile.name,)).insert()
+
+	def test_rejects_a_grant_for_no_one(self):
+		self.assertRaises(frappe.ValidationError, make_grant(roles=()).insert)
 
 	def test_rejects_roles_frappe_assigns_on_its_own(self):
 		self.assertRaises(frappe.ValidationError, make_grant(roles=("All",)).insert)
