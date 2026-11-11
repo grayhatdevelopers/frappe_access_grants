@@ -1,0 +1,210 @@
+{
+ "actions": [],
+ "autoname": "format:AR-{####}",
+ "creation": "2026-11-11 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "status",
+  "column_break_window",
+  "from_time",
+  "until",
+  "access_section",
+  "roles",
+  "role_profiles",
+  "reason",
+  "needs_system_manager",
+  "more_time_section",
+  "requested_until",
+  "decision_section",
+  "decided_by",
+  "decided_on",
+  "column_break_decision",
+  "revoked_by",
+  "revoked_on",
+  "added_roles"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "default": "__user",
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Who gets the access."
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Requested\nApproved\nActive\nExpired\nRevoked\nRejected\nWithdrawn",
+   "default": "Requested",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_window",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_time",
+   "fieldtype": "Datetime",
+   "label": "From",
+   "default": "now",
+   "reqd": 1
+  },
+  {
+   "fieldname": "until",
+   "fieldtype": "Datetime",
+   "label": "Until",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "The roles come off at this time. An Access Approver can approve up to 7 days; longer needs a System Manager."
+  },
+  {
+   "fieldname": "access_section",
+   "fieldtype": "Section Break",
+   "label": "Access"
+  },
+  {
+   "fieldname": "roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Roles",
+   "options": "Has Role",
+   "description": "Roles to add for the window. Only a System Manager can grant System Manager."
+  },
+  {
+   "fieldname": "role_profiles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Role Profiles",
+   "options": "User Role Profile",
+   "description": "The roles these profiles hold when the access starts are added. The profile itself is not put on the user."
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "reqd": 1
+  },
+  {
+   "fieldname": "needs_system_manager",
+   "fieldtype": "Check",
+   "label": "Needs a System Manager",
+   "read_only": 1,
+   "default": "0",
+   "description": "Set when the request includes System Manager or runs longer than 7 days. Only a System Manager can approve it, and only System Managers are notified."
+  },
+  {
+   "fieldname": "more_time_section",
+   "fieldtype": "Section Break",
+   "label": "More Time",
+   "depends_on": "requested_until"
+  },
+  {
+   "fieldname": "requested_until",
+   "fieldtype": "Datetime",
+   "label": "Asked To Extend Until",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "decision_section",
+   "fieldtype": "Section Break",
+   "label": "Decision",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "decided_by",
+   "fieldtype": "Link",
+   "label": "Decided By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "decided_on",
+   "fieldtype": "Datetime",
+   "label": "Decided On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_decision",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "revoked_by",
+   "fieldtype": "Link",
+   "label": "Revoked By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "revoked_on",
+   "fieldtype": "Datetime",
+   "label": "Revoked On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "added_roles",
+   "fieldtype": "Table",
+   "label": "Roles Added",
+   "options": "Has Role",
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "The roles this request added to the user. Only these are removed when it ends; roles the user already had stay."
+  }
+ ],
+ "links": [],
+ "modified": "2026-11-11 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Access Grants",
+ "name": "Access Request",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "delete": 1,
+   "export": 1
+  },
+  {
+   "role": "Access Approver",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "export": 1
+  },
+  {
+   "role": "Desk User",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "user",
+ "track_changes": 1
+}
